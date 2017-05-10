@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Article;
-use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
 {
@@ -13,15 +12,20 @@ class ArticlesController extends Controller
         return $article->all();
     }
 
-    public function show(Article $article, $id)
+    public function show($articleId)
     {
-        $result = $article->find($id);
+
+        $result = Article::find($articleId);
 
         if (!$result) {
             return response()->json(["code" => 404, "message" => "Article not found"], 404);
         }
 
         return $result;
+    }
+
+    public function store($data) {
+        return $data;
     }
 }
 
