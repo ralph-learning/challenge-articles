@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use Illuminate\Http\Request;
+
 
 class ArticlesController extends Controller
 {
@@ -24,8 +26,24 @@ class ArticlesController extends Controller
         return $result;
     }
 
-    public function store($data) {
-        return $data;
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'title' => 'required|max:255',
+            'content' => 'required'
+        ]);
+
+        $input = $request->only(['title', 'content', 'status']);
+
+        $article = new Article($input);
+
+        $article->save();
+
+        return response()->json([
+            "data" => $article,
+            "code" => 200,
+            "message" => "Aaticle create successful"
+        ], 200);
     }
 }
 
