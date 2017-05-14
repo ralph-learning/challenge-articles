@@ -44,7 +44,7 @@ class ArticlesController extends ApiController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules);
-        if($response = $this->hasError($validator)) return $response;
+        if($validator->fails()) return $this->respondInvalidFields($validator);
 
 
         $input = $request->only(['title', 'content', 'status']);
@@ -68,7 +68,7 @@ class ArticlesController extends ApiController
         $article->status = $request->get('status');
 
         $validator = Validator::make($request->all(), $this->rules);
-        if($response = $this->hasError($validator)) return $response;
+        if($validator->fails()) return $this->respondInvalidFields($validator);
 
         if($article->save()) {
             return $this->respond([

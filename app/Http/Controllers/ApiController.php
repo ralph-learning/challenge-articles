@@ -30,6 +30,11 @@ class ApiController extends Controller {
         return $this->setStatusCode(404)->respondWithErrors($message);
     }
 
+    public function respondInvalidFields($validator) {
+        $messagesError = $validator->errors()->all();
+        return $this->setStatusCode(422)->respondWithErrors($messagesError);
+    }
+
     public function respond($data, $headers = [])
     {
         return response()->json($data, $this->getStatusCode(), $headers);
@@ -44,6 +49,7 @@ class ApiController extends Controller {
             ]
         ]);
     }
+
 
 
 }
