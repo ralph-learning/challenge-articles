@@ -22,6 +22,10 @@ class ArticlesController extends ApiController
         $this->articleTransformer = $articleTransformer;
     }
 
+    /**
+     * @param Article $article
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Article $article)
     {
         $result = $article->all();
@@ -31,6 +35,11 @@ class ArticlesController extends ApiController
         ]);
     }
 
+    /**
+     * @param $id
+     * @param Article $article
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($id, Article $article)
     {
         $result = $article->find($id);
@@ -41,6 +50,10 @@ class ArticlesController extends ApiController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules);
@@ -57,6 +70,12 @@ class ArticlesController extends ApiController
         }
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @param Article $article
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update($id, Request $request, Article $article)
     {
         $article = $article->find($id);

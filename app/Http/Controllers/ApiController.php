@@ -25,21 +25,38 @@ class ApiController extends Controller {
         return $this;
     }
 
+    /**
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function respondNotFound($message = 'Not found')
     {
         return $this->setStatusCode(404)->respondWithErrors($message);
     }
 
+    /**
+     * @param $validator
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function respondInvalidFields($validator) {
         $messagesError = $validator->errors()->all();
         return $this->setStatusCode(422)->respondWithErrors($messagesError);
     }
 
+    /**
+     * @param $data
+     * @param array $headers
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function respond($data, $headers = [])
     {
         return response()->json($data, $this->getStatusCode(), $headers);
     }
 
+    /**
+     * @param $message
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function respondWithErrors($message)
     {
         return response()->json([
@@ -49,7 +66,4 @@ class ApiController extends Controller {
             ]
         ]);
     }
-
-
-
 }
