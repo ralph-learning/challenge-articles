@@ -3,47 +3,78 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Http\Transforms\ArticleTransformer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 
-class ArticlesController extends Controller
+class ArticlesController extends ApiController
 {
+    private $rules = [
+        "title" => "required|max:255",
+        "content" => "required"
+    ];
+
+    protected $articleTransformer;
+
+    function __construct(ArticleTransformer $articleTransformer)
+    {
+        $this->articleTransformer = $articleTransformer;
+    }
 
     public function index(Article $article)
     {
-        return $article->all();
+        $result = $article->all();
+
+        return $this->respond([
+            "data" => $this->articleTransformer->transformCollection($result->toArray())
+        ]);
     }
 
-    public function show($articleId)
+    public function show($id, Article $article)
     {
+        $result = $article->find($id);
+        if (!$result) return $this->respondNotFound('Article not found');
 
-        $result = Article::find($articleId);
-
-        if (!$result) {
-            return response()->json(["code" => 404, "message" => "Article not found"], 404);
-        }
-
-        return $result;
+        return $this->respond([
+            "data" => $this->articleTransformer->transform($result)
+        ]);
     }
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'title' => 'required|max:255',
-            'content' => 'required'
-        ]);
+        $validator = Validator::make($request->all(), $this->rules);
+        if($response = $this->hasError($validator)) return $response;
+
 
         $input = $request->only(['title', 'content', 'status']);
-
         $article = new Article($input);
+        if($article->save()) {
+            return $this->respond([
+                "data" => $article,
+                "message" => "Article create successful"
+            ]);
+        }
+    }
 
-        $article->save();
+    public function update($id, Request $request, Article $article)
+    {
+        $article = $article->find($id);
 
-        return response()->json([
-            "data" => $article,
-            "code" => 200,
-            "message" => "Aaticle create successful"
-        ], 200);
+        if(!$article) return $this->respondNotFound('Article does not exist');
+
+        $article->title = $request->get('title');
+        $article->content = $request->get('content');
+        $article->status = $request->get('status');
+
+        $validator = Validator::make($request->all(), $this->rules);
+        if($response = $this->hasError($validator)) return $response;
+
+        if($article->save()) {
+            return $this->respond([
+                "message" => "Article updated"
+            ]);
+        }
     }
 }
 
