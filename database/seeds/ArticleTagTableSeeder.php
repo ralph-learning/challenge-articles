@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ArticleTableSeeder extends Seeder
+class ArticleTagTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,7 +11,7 @@ class ArticleTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('articles')->delete();
-        factory(App\Article::class, 6)->create();
+        DB::table('article_tags')->delete();
+        factory(App\ArticleTag::class, 6)->create();
     }
 }

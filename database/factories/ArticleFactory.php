@@ -14,8 +14,9 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\Article::class, function (Faker\Generator $faker) {
     return [
-        'title' => $faker->title,
+        'title' => $faker->word,
         'content' => $faker->text,
         'status' => 0
     ];
 });
+
