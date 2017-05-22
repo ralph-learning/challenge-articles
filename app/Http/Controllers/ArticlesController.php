@@ -78,20 +78,38 @@ class ArticlesController extends ApiController
      */
     public function update($id, Request $request, Article $article)
     {
-        $article = $article->find($id);
+        $result = $article->find($id);
 
-        if(!$article) return $this->respondNotFound('Article does not exist');
+        if(!$result) return $this->respondNotFound('Article does not exist');
 
-        $article->title = $request->get('title');
-        $article->content = $request->get('content');
-        $article->status = $request->get('status');
+        $input = $request->only(['title', 'content', 'status']);
+        $article->fill($input);
+
 
         $validator = Validator::make($request->all(), $this->rules);
         if($validator->fails()) return $this->respondInvalidFields($validator);
 
-        if($article->save()) {
+        if($result->save() == false) {
+           $this->respondWithErrors($validator);
+        }
+
+        return $this->respond([
+            "message" => "Article updated"
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @param Article $article
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id, Article $article) {
+        $article = $article->find($id);
+        if(!$article) return $this->respondNotFound('Article does not exist');
+
+        if($article->delete()) {
             return $this->respond([
-                "message" => "Article updated"
+                "message" => "Article removed with successful."
             ]);
         }
     }

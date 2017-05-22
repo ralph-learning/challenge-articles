@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
+
 class ApiController extends Controller {
 
     protected $statusCode = 200;
@@ -31,7 +33,7 @@ class ApiController extends Controller {
      */
     public function respondNotFound($message = 'Not found')
     {
-        return $this->setStatusCode(404)->respondWithErrors($message);
+        return $this->setStatusCode(Response::HTTP_NOT_FOUND)->respondWithErrors($message);
     }
 
     /**
@@ -40,7 +42,7 @@ class ApiController extends Controller {
      */
     public function respondInvalidFields($validator) {
         $messagesError = $validator->errors()->all();
-        return $this->setStatusCode(422)->respondWithErrors($messagesError);
+        return $this->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY)->respondWithErrors($messagesError);
     }
 
     /**
@@ -64,6 +66,6 @@ class ApiController extends Controller {
                 'message' => $message,
                 'status_code' => $this->getStatusCode()
             ]
-        ]);
+        ], $this->getStatusCode());
     }
 }
