@@ -46,6 +46,15 @@ class ApiController extends Controller {
     }
 
     /**
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function respondCreated($message = 'Create with successful')
+    {
+        return $this->setStatusCode(Response::HTTP_CREATED)->respond($message);
+    }
+
+    /**
      * @param $data
      * @param array $headers
      * @return \Illuminate\Http\JsonResponse

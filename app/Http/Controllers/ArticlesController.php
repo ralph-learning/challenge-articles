@@ -59,11 +59,10 @@ class ArticlesController extends ApiController
         $validator = Validator::make($request->all(), $this->rules);
         if($validator->fails()) return $this->respondInvalidFields($validator);
 
-
         $input = $request->only(['title', 'content', 'status']);
         $article = new Article($input);
         if($article->save()) {
-            return $this->respond([
+            return $this->respondCreated([
                 "data" => $article,
                 "message" => "Article create successful"
             ]);
